@@ -8,10 +8,10 @@ import {
 // GET - Get a single API key by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // Validate ID
     if (!id || id === "undefined") {
@@ -51,12 +51,13 @@ export async function GET(
 // PUT - Update an API key
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Extract ID from params - handle both direct access and destructuring
-    const id = params?.id || (params as any)?.id;
     
+    // Extract ID from params - handle both direct access and destructuring
+    const id = (await params)?.id || (await params as any)?.id;
+
     // Fallback: extract from URL if params.id is undefined
     const url = new URL(request.url);
     const pathParts = url.pathname.split("/");
@@ -113,11 +114,11 @@ export async function PUT(
 // DELETE - Delete an API key
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Extract ID from params - handle both direct access and destructuring
-    const id = params?.id || (params as any)?.id;
+    const id = (await params)?.id || (await params as any)?.id;
     
     // Fallback: extract from URL if params.id is undefined
     const url = new URL(request.url);
